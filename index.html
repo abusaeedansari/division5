@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Division Game for Grade 3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* CSS Styles */
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #fffbe6;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #333;
+            padding: 20px;
+            background-color: #ffd27f;
+            margin: 0;
+            font-size: 36px;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding-top: 20px;
+        }
+        #start-container {
+            display: block;
+        }
+        #start-button {
+            padding: 20px 40px;
+            font-size: 24px;
+            margin: 20px auto;
+            cursor: pointer;
+            background-color: #84b6f4;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 2px 2px 5px #999;
+            transition: background-color 0.3s;
+            display: block;
+        }
+        #start-button:hover {
+            background-color: #5da9f6;
+        }
+        #name-input {
+            font-size: 24px;
+            padding: 10px;
+            width: 80%;
+            max-width: 300px;
+            margin-bottom: 20px;
+        }
+        #question-container {
+            display: none;
+            margin-top: 30px;
+        }
+        #question-number {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        #question-text {
+            font-size: 28px;
+            margin: 20px 0;
+            color: #333;
+            padding: 10px;
+            line-height: 1.4;
+        }
+        #items-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 30px;
+            transition: transform 1s ease;
+        }
+        .item {
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 1;
+            transition: all 0.5s ease;
+        }
+        #answer-input {
+            font-size: 24px;
+            padding: 10px;
+            width: 80%;
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+        #submit-button {
+            padding: 15px 30px;
+            font-size: 24px;
+            cursor: pointer;
+            background-color: #77dd77;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+        }
+        #submit-button:hover {
+            background-color: #5ecb5e;
+        }
+        #feedback {
+            font-size: 28px;
+            margin-top: 20px;
+            min-height: 40px;
+        }
+        #next-button {
+            padding: 15px 30px;
+            font-size: 24px;
+            margin: 20px auto;
+            cursor: pointer;
+            background-color: #77dd77;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            display: none;
+            transition: background-color 0.3s;
+        }
+        #next-button:hover {
+            background-color: #5ecb5e;
+        }
+        #score {
+            font-size: 28px;
+            margin-top: 30px;
+            color: #333;
+        }
+        #final-score {
+            font-size: 36px;
+            margin-top: 30px;
+            color: #333;
+        }
+        #restart-button {
+            padding: 20px 40px;
+            font-size: 24px;
+            margin: 20px auto;
+            cursor: pointer;
+            background-color: #ffcc5c;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            transition: background-color 0.3s;
+            display: none;
+        }
+        #restart-button:hover {
+            background-color: #ffb84d;
+        }
+        #timer {
+            font-size: 24px;
+            color: #d9534f;
+            margin-top: 10px;
+        }
+        .group {
+            border: 2px dashed #333;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+        .item.move {
+            animation: moveToGroup 1s forwards;
+        }
+        @keyframes moveToGroup {
+            to {
+                transform: scale(0.8);
+            }
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 28px;
+                padding: 15px;
+            }
+            #question-text {
+                font-size: 24px;
+            }
+            #start-button, #restart-button, #submit-button {
+                font-size: 20px;
+                padding: 15px 30px;
+            }
+            #name-input, #answer-input {
+                font-size: 20px;
+                padding: 8px;
+            }
+            #feedback {
+                font-size: 24px;
+            }
+            #question-number, #score, #timer {
+                font-size: 24px;
+            }
+            #final-score {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Division Game for Grade 3</h1>
+
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="start-container">
+            <input type="text" id="name-input" placeholder="Enter your name">
+            <br>
+            <button id="start-button" onclick="startGame()">Start Game</button>
+        </div>
+
+        <!-- Question Container -->
+        <div id="question-container">
+            <div id="question-number"></div>
+            <div id="timer"></div>
+            <div id="question-text"></div>
+            <div id="items-container"></div>
+            <input type="text" id="answer-input" placeholder="Enter your answer">
+            <br>
+            <button id="submit-button" onclick="checkAnswer()">Submit Answer</button>
+            <div id="feedback"></div>
+            <button id="next-button" onclick="nextQuestion()">Next Question</button>
+            <div id="score"></div>
+        </div>
+
+        <!-- Final Score -->
+        <div id="final-score"></div>
+        <button id="restart-button" onclick="restartGame()">Play Again</button>
+    </div>
+
+    <script>
+        // JavaScript Code
+
+        const questions = [
+    // Question 1
+    {
+        itemType: 'cup',
+        totalItems: 20,
+        groupSize: 4,
+        questionText: "There are 20 cups. If you put them into groups of 4, how many groups will you have?",
+        correctAnswer: "5",
+        operation: "findNumberOfGroups"
+    },
+    // Question 2
+    {
+        itemType: 'apple',
+        totalItems: 6,
+        numberOfGroups: 2,
+        questionText: "6 apples are divided equally into 2 groups. How many apples are in each group?",
+        correctAnswer: "3",
+        operation: "findGroupSize"
+    },
+    // Question 3
+    {
+        itemType: 'pencil',
+        totalItems: 24,
+        numberOfGroups: 6,
+        questionText: "24 pencils are shared equally among 6 students. How many pencils does each student get?",
+        correctAnswer: "4",
+        operation: "findGroupSize"
+    },
+    // Question 4
+    {
+        itemType: 'orange',
+        totalItems: 15,
+        groupSize: 3,
+        questionText: "If you have 15 oranges and put them into groups of 3, how many groups will you make?",
+        correctAnswer: "5",
+        operation: "findNumberOfGroups"
+    },
+    // Question 5
+    {
+        itemType: 'flower',
+        totalItems: 18,
+        numberOfGroups: 3,
+        questionText: "18 flowers are arranged equally in 3 vases. How many flowers are in each vase?",
+        correctAnswer: "6",
+        operation: "findGroupSize"
+    },
+    // Question 6
+    {
+        itemType: 'ball',
+        totalItems: 12,
+        groupSize: 4,
+        questionText: "12 balls are placed into groups of 4. How many groups are there?",
+        correctAnswer: "3",
+        operation: "findNumberOfGroups"
+    },
+    // Question 7
+    {
+        itemType: 'book',
+        totalItems: 20,
+        numberOfGroups: 5,
+        questionText: "20 books are shared equally among 5 shelves. How many books are on each shelf?",
+        correctAnswer: "4",
+        operation: "findGroupSize"
+    },
+    // Question 8
+    {
+        itemType: 'candy',
+        totalItems: 25,
+        groupSize: 5,
+        questionText: "If you have 25 candies and put them into bags with 5 candies each, how many bags do you need?",
+        correctAnswer: "5",
+        operation: "findNumberOfGroups"
+    },
+    // Question 9
+    {
+        itemType: 'toy',
+        totalItems: 30,
+        numberOfGroups: 6,
+        questionText: "30 toys are divided equally among 6 kids. How many toys does each kid get?",
+        correctAnswer: "5",
+        operation: "findGroupSize"
+    },
+    // Question 10
+    {
+        itemType: 'star',
+        totalItems: 18,
+        groupSize: 3,
+        questionText: "There are 18 stars. If you arrange them in groups of 3, how many groups will you have?",
+        correctAnswer: "6",
+        operation: "findNumberOfGroups"
+    },
+    // Question 11
+    {
+        itemType: 'cookie',
+        totalItems: 16,
+        numberOfGroups: 4,
+        questionText: "16 cookies are shared equally among 4 friends. How many cookies does each friend get?",
+        correctAnswer: "4",
+        operation: "findGroupSize"
+    },
+    // Question 12
+    {
+        itemType: 'car',
+        totalItems: 10,
+        groupSize: 2,
+        questionText: "You have 10 toy cars and want to put them into groups of 2. How many groups can you make?",
+        correctAnswer: "5",
+        operation: "findNumberOfGroups"
+    },
+    // Question 13
+    {
+        itemType: 'butterfly',
+        totalItems: 21,
+        groupSize: 7,
+        questionText: "21 butterflies are flying in groups of 7. How many groups are there?",
+        correctAnswer: "3",
+        operation: "findNumberOfGroups"
+    },
+    // Question 14
+    {
+        itemType: 'leaf',
+        totalItems: 24,
+        numberOfGroups: 8,
+        questionText: "24 leaves are divided equally among 8 piles. How many leaves are in each pile?",
+        correctAnswer: "3",
+        operation: "findGroupSize"
+    },
+    // Question 15
+    {
+        itemType: 'fish',
+        totalItems: 18,
+        groupSize: 6,
+        questionText: "If you have 18 fish and put them into tanks with 6 fish each, how many tanks do you need?",
+        correctAnswer: "3",
+        operation: "findNumberOfGroups"
+    },
+    // Question 16
+    {
+        itemType: 'cat',
+        totalItems: 32,
+        numberOfGroups: 4,
+        questionText: "32 toy cats are shared equally among 4 children. How many toy cats does each child get?",
+        correctAnswer: "8",
+        operation: "findGroupSize"
+    },
+    // Question 17
+    {
+        itemType: 'hat',
+        totalItems: 9,
+        numberOfGroups: 3,
+        questionText: "There are 9 hats placed into 3 boxes equally. How many hats are in each box?",
+        correctAnswer: "3",
+        operation: "findGroupSize"
+    },
+    // Question 18
+    {
+        itemType: 'shoe',
+        totalItems: 14,
+        groupSize: 2,
+        questionText: "14 shoes are organized into pairs. How many pairs of shoes are there?",
+        correctAnswer: "7",
+        operation: "findNumberOfGroups"
+    },
+    // Question 19
+    {
+        itemType: 'tree',
+        totalItems: 15,
+        numberOfGroups: 5,
+        questionText: "15 trees are planted in 5 rows equally. How many trees are in each row?",
+        correctAnswer: "3",
+        operation: "findGroupSize"
+    },
+    // Question 20
+    {
+        itemType: 'balloon',
+        totalItems: 20,
+        groupSize: 5,
+        questionText: "If you have 20 balloons and tie them in bunches of 5, how many bunches will you have?",
+        correctAnswer: "4",
+        operation: "findNumberOfGroups"
+    },
+    // Question 21
+    {
+        itemType: 'cup',
+        totalItems: 30,
+        groupSize: 5,
+        questionText: "30 cups are arranged in stacks of 5. How many stacks are there?",
+        correctAnswer: "6",
+        operation: "findNumberOfGroups"
+    },
+    // Question 22
+    {
+        itemType: 'apple',
+        totalItems: 9,
+        numberOfGroups: 3,
+        questionText: "9 apples are divided equally among 3 baskets. How many apples are in each basket?",
+        correctAnswer: "3",
+        operation: "findGroupSize"
+    },
+    // Question 23
+    {
+        itemType: 'pencil',
+        totalItems: 18,
+        groupSize: 3,
+        questionText: "If you have 18 pencils and put them into groups of 3, how many groups can you make?",
+        correctAnswer: "6",
+        operation: "findNumberOfGroups"
+    },
+    // Question 24
+    {
+        itemType: 'orange',
+        totalItems: 12,
+        numberOfGroups: 4,
+        questionText: "12 oranges are shared equally among 4 kids. How many oranges does each kid get?",
+        correctAnswer: "3",
+        operation: "findGroupSize"
+    },
+    // Question 25
+    {
+        itemType: 'flower',
+        totalItems: 21,
+        numberOfGroups: 7,
+        questionText: "21 flowers are arranged equally in 7 bouquets. How many flowers are in each bouquet?",
+        correctAnswer: "3",
+        operation: "findGroupSize"
+    },
+    // Question 26
+    {
+        itemType: 'ball',
+        totalItems: 16,
+        groupSize: 4,
+        questionText: "You have 16 balls and put them into groups of 4. How many groups are there?",
+        correctAnswer: "4",
+        operation: "findNumberOfGroups"
+    },
+    // Question 27
+    {
+        itemType: 'book',
+        totalItems: 24,
+        numberOfGroups: 8,
+        questionText: "24 books are shared equally among 8 students. How many books does each student get?",
+        correctAnswer: "3",
+        operation: "findGroupSize"
+    },
+    // Question 28
+    {
+        itemType: 'candy',
+        totalItems: 18,
+        groupSize: 6,
+        questionText: "If you have 18 candies and put them into bags with 6 candies each, how many bags do you need?",
+        correctAnswer: "3",
+        operation: "findNumberOfGroups"
+    },
+    // Question 29
+    {
+        itemType: 'toy',
+        totalItems: 35,
+        numberOfGroups: 7,
+        questionText: "35 toys are divided equally among 7 children. How many toys does each child get?",
+        correctAnswer: "5",
+        operation: "findGroupSize"
+    },
+    // Question 30
+    {
+        itemType: 'star',
+        totalItems: 25,
+        groupSize: 5,
+        questionText: "There are 25 stars arranged in groups of 5. How many groups are there?",
+        correctAnswer: "5",
+        operation: "findNumberOfGroups"
+    },
+    // Question 31
+    {
+        itemType: 'cookie',
+        totalItems: 30,
+        numberOfGroups: 5,
+        questionText: "30 cookies are shared equally among 5 friends. How many cookies does each friend get?",
+        correctAnswer: "6",
+        operation: "findGroupSize"
+    },
+    // Question 32
+    {
+        itemType: 'car',
+        totalItems: 18,
+        groupSize: 6,
+        questionText: "18 toy cars are placed into groups of 6. How many groups can you make?",
+        correctAnswer: "3",
+        operation: "findNumberOfGroups"
+    },
+    // Question 33
+    {
+        itemType: 'butterfly',
+        totalItems: 14,
+        groupSize: 2,
+        questionText: "14 butterflies are flying in pairs. How many pairs are there?",
+        correctAnswer: "7",
+        operation: "findNumberOfGroups"
+    },
+    // Question 34
+    {
+        itemType: 'leaf',
+        totalItems: 27,
+        numberOfGroups: 9,
+        questionText: "27 leaves are divided equally among 9 piles. How many leaves are in each pile?",
+        correctAnswer: "3",
+        operation: "findGroupSize"
+    },
+    // Question 35
+    {
+        itemType: 'fish',
+        totalItems: 24,
+        groupSize: 4,
+        questionText: "If you have 24 fish and put them into tanks with 4 fish each, how many tanks do you need?",
+        correctAnswer: "6",
+        operation: "findNumberOfGroups"
+    },
+    // Question 36
+    {
+        itemType: 'cat',
+        totalItems: 40,
+        numberOfGroups: 5,
+        questionText: "40 toy cats are shared equally among 5 kids. How many toy cats does each kid get?",
+        correctAnswer: "8",
+        operation: "findGroupSize"
+    },
+    // Question 37
+    {
+        itemType: 'hat',
+        totalItems: 12,
+        numberOfGroups: 4,
+        questionText: "There are 12 hats placed into 4 boxes equally. How many hats are in each box?",
+        correctAnswer: "3",
+        operation: "findGroupSize"
+    },
+    // Question 38
+    {
+        itemType: 'shoe',
+        totalItems: 20,
+        groupSize: 2,
+        questionText: "20 shoes are organized into pairs. How many pairs of shoes are there?",
+        correctAnswer: "10",
+        operation: "findNumberOfGroups"
+    },
+    // Question 39
+    {
+        itemType: 'tree',
+        totalItems: 18,
+        numberOfGroups: 6,
+        questionText: "18 trees are planted in 6 rows equally. How many trees are in each row?",
+        correctAnswer: "3",
+        operation: "findGroupSize"
+    },
+    // Question 40
+    {
+        itemType: 'balloon',
+        totalItems: 15,
+        groupSize: 5,
+        questionText: "If you have 15 balloons and tie them in bunches of 5, how many bunches will you have?",
+        correctAnswer: "3",
+        operation: "findNumberOfGroups"
+    },
+    // Question 41
+    {
+        itemType: 'cup',
+        totalItems: 25,
+        groupSize: 5,
+        questionText: "25 cups are arranged in stacks of 5. How many stacks are there?",
+        correctAnswer: "5",
+        operation: "findNumberOfGroups"
+    },
+    // Question 42
+    {
+        itemType: 'apple',
+        totalItems: 12,
+        numberOfGroups: 4,
+        questionText: "12 apples are divided equally among 4 baskets. How many apples are in each basket?",
+        correctAnswer: "3",
+        operation: "findGroupSize"
+    },
+    // Question 43
+    {
+        itemType: 'pencil',
+        totalItems: 27,
+        groupSize: 9,
+        questionText: "If you have 27 pencils and put them into groups of 9, how many groups can you make?",
+        correctAnswer: "3",
+        operation: "findNumberOfGroups"
+    },
+    // Question 44
+    {
+        itemType: 'orange',
+        totalItems: 20,
+        numberOfGroups: 4,
+        questionText: "20 oranges are shared equally among 4 kids. How many oranges does each kid get?",
+        correctAnswer: "5",
+        operation: "findGroupSize"
+    },
+    // Question 45
+    {
+        itemType: 'flower',
+        totalItems: 24,
+        numberOfGroups: 6,
+        questionText: "24 flowers are arranged equally in 6 bouquets. How many flowers are in each bouquet?",
+        correctAnswer: "4",
+        operation: "findGroupSize"
+    },
+    // Question 46
+    {
+        itemType: 'ball',
+        totalItems: 21,
+        groupSize: 7,
+        questionText: "You have 21 balls and put them into groups of 7. How many groups are there?",
+        correctAnswer: "3",
+        operation: "findNumberOfGroups"
+    },
+    // Question 47
+    {
+        itemType: 'book',
+        totalItems: 15,
+        numberOfGroups: 5,
+        questionText: "15 books are shared equally among 5 students. How many books does each student get?",
+        correctAnswer: "3",
+        operation: "findGroupSize"
+    },
+    // Question 48
+    {
+        itemType: 'candy',
+        totalItems: 24,
+        groupSize: 8,
+        questionText: "If you have 24 candies and put them into bags with 8 candies each, how many bags do you need?",
+        correctAnswer: "3",
+        operation: "findNumberOfGroups"
+    },
+    // Question 49
+    {
+        itemType: 'toy',
+        totalItems: 28,
+        numberOfGroups: 7,
+        questionText: "28 toys are divided equally among 7 children. How many toys does each child get?",
+        correctAnswer: "4",
+        operation: "findGroupSize"
+    },
+    // Question 50
+    {
+        itemType: 'star',
+        totalItems: 30,
+        groupSize: 5,
+        questionText: "There are 30 stars arranged in groups of 5. How many groups are there?",
+        correctAnswer: "6",
+        operation: "findNumberOfGroups"
+    }
+];
+
+
+        // Map itemType to image paths
+        const itemImages = {
+            'cup': 'images/cup.png',
+            'apple': 'images/apple.png',
+            'orange': 'images/orange.png',
+            'pencil': 'images/pencil.png',
+            'flower': 'images/flower.png',
+            'ball': 'images/ball.png',
+            'book': 'images/book.png',
+            'candy': 'images/candy.png',
+            'toy': 'images/toy.png',
+            'star': 'images/star.png',
+            'cookie': 'images/cookie.png',
+            'car': 'images/car.png',
+            'butterfly': 'images/butterfly.png',
+            'leaf': 'images/leaf.png',
+            'fish': 'images/fish.png',
+            'cat': 'images/cat.png',
+            'hat': 'images/hat.png',
+            'shoe': 'images/shoe.png',
+            'tree': 'images/tree.png',
+            'balloon': 'images/balloon.png'
+        };
+
+        let playerName = '';
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const totalQuestions = questions.length;
+        let timerInterval;
+        let timeLeft = 30;
+
+        function startGame() {
+            playerName = document.getElementById('name-input').value.trim();
+            if (playerName === '') {
+                alert('Please enter your name to start the game.');
+                return;
+            }
+            document.getElementById('start-container').style.display = 'none';
+            document.getElementById('question-container').style.display = 'block';
+            currentQuestionIndex = 0;
+            score = 0;
+            showQuestion();
+            startTimer();
+        }
+
+        function showQuestion() {
+            resetTimer();
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('next-button').style.display = 'none';
+            document.getElementById('submit-button').style.display = 'inline-block';
+            document.getElementById('answer-input').disabled = false;
+            document.getElementById('answer-input').value = '';
+
+            let questionObj = questions[currentQuestionIndex];
+            document.getElementById('question-number').textContent = `Question ${currentQuestionIndex + 1} of ${totalQuestions}`;
+            document.getElementById('question-text').textContent = questionObj.questionText;
+            document.getElementById('score').textContent = `${playerName}'s Score: ${score}`;
+
+            // Display items
+            generateItems(questionObj);
+        }
+
+        function generateItems(questionObj) {
+            const itemsContainer = document.getElementById('items-container');
+            itemsContainer.innerHTML = ''; // Clear previous items
+
+            const totalItems = questionObj.totalItems;
+            const itemType = questionObj.itemType;
+            const itemImagePath = itemImages[itemType];
+
+            for (let i = 0; i < totalItems; i++) {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('item');
+                if (itemImagePath) {
+                    itemDiv.style.backgroundImage = `url('${itemImagePath}')`;
+                } else {
+                    itemDiv.style.backgroundColor = '#ccc'; // Placeholder if image not found
+                }
+                itemsContainer.appendChild(itemDiv);
+            }
+        }
+
+        function checkAnswer() {
+            clearInterval(timerInterval);
+            let questionObj = questions[currentQuestionIndex];
+            let userAnswer = document.getElementById('answer-input').value.trim();
+            let correctAnswer = questionObj.correctAnswer;
+
+            if (userAnswer === correctAnswer) {
+                document.getElementById('feedback').textContent = 'Correct! 🎉';
+                score += 2;
+            } else {
+                document.getElementById('feedback').textContent = `Incorrect. The correct answer is ${correctAnswer}.`;
+            }
+            document.getElementById('score').textContent = `${playerName}'s Score: ${score}`;
+            document.getElementById('submit-button').style.display = 'none';
+            document.getElementById('answer-input').disabled = true;
+            document.getElementById('next-button').style.display = 'block';
+
+            animateGrouping(questionObj);
+        }
+
+        function animateGrouping(questionObj) {
+            const itemsContainer = document.getElementById('items-container');
+            const items = itemsContainer.querySelectorAll('.item');
+
+            let groupSize, numGroups;
+
+            if (questionObj.operation === 'findNumberOfGroups') {
+                groupSize = questionObj.groupSize;
+                numGroups = questionObj.totalItems / groupSize;
+            } else if (questionObj.operation === 'findGroupSize') {
+                numGroups = questionObj.numberOfGroups;
+                groupSize = questionObj.totalItems / numGroups;
+            } else {
+                // Default fallback
+                groupSize = questionObj.groupSize || questionObj.totalItems / questionObj.numberOfGroups;
+                numGroups = questionObj.numberOfGroups || questionObj.totalItems / groupSize;
+            }
+
+            // Clear existing items
+            itemsContainer.innerHTML = '';
+
+            let index = 0;
+
+            for (let i = 0; i < numGroups; i++) {
+                const groupDiv = document.createElement('div');
+                groupDiv.classList.add('group');
+                itemsContainer.appendChild(groupDiv);
+
+                for (let j = 0; j < groupSize && index < items.length; j++) {
+                    const item = items[index];
+                    item.classList.add('move');
+                    groupDiv.appendChild(item);
+                    index++;
+                }
+            }
+
+            // Apply animation to items
+            const groups = itemsContainer.querySelectorAll('.group');
+            groups.forEach((group, idx) => {
+                setTimeout(() => {
+                    group.style.transform = 'scale(1.05)';
+                }, idx * 200);
+                setTimeout(() => {
+                    group.style.transform = 'scale(1)';
+                }, idx * 200 + 200);
+            });
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < totalQuestions) {
+                showQuestion();
+                startTimer();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            clearInterval(timerInterval);
+            document.getElementById('question-container').style.display = 'none';
+            document.getElementById('final-score').innerHTML = `Great job, ${playerName}!<br>Your final score is ${score} out of ${totalQuestions * 2}.`;
+            document.getElementById('restart-button').style.display = 'block';
+        }
+
+        function restartGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById('restart-button').style.display = 'none';
+            document.getElementById('final-score').textContent = '';
+            document.getElementById('start-container').style.display = 'block';
+            document.getElementById('question-container').style.display = 'none';
+            document.getElementById('name-input').value = '';
+        }
+
+        function startTimer() {
+            timeLeft = 30;
+            document.getElementById('timer').textContent = `Time Left: ${timeLeft} sec`;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = `Time Left: ${timeLeft} sec`;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('feedback').textContent = 'Time\'s up!';
+                    document.getElementById('next-button').style.display = 'block';
+                    disableInputs();
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            document.getElementById('timer').textContent = '';
+        }
+
+        function disableInputs() {
+            document.getElementById('submit-button').style.display = 'none';
+            document.getElementById('answer-input').disabled = true;
+        }
+    </script>
+</body>
+</html>
